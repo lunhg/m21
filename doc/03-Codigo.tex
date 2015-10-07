@@ -1,0 +1,31 @@
+\section{Metodologia}\label{sec:metodo}
+
+\subsection*{Organização dos códigos}
+
+O programa foi separado em três arquivos: \begin{inparaenum}[\itshape i)\upshape]
+\item um binário em \emph{Python} que realiza tarefas gerais da linha de comando (\emph{m21});
+\item rotinas do Music21 (\emph{m21utils.py}); e 
+\item um para rotinas externas (\emph{tools.py})
+\end{inparaenum}\footnote{Todos códigos, exemplos e documentação estão disponíveis \url{https://www.github.com/jahpd/m21}.}.
+
+\subsection*{Categorização do software}
+
+Nas palavras de \cite[p.~x-xiii]{cope_prefacio_2008}, o \emph{m21} pode ser classificado como uma ferramenta para uma Assistência Gerada por Computador (\emph{Computer Generated Assistance} ou CGA). Dentro das sub-categorias de CGA propostas por Cope, o \emph{m21} pode ser incuído nos três modos abaixo:\begin{inparaenum}[\itshape 1)\upshape]
+\item uso de uma Linguagem de Programação em texto (PLs)(\emph{Programming Languages}) ao invés de uma linguagem de programação visual (VPL); 
+\item o material partitural é gerado para performance humana ao invés de uma performance eletroacústica;
+\item abordagens baseadas em regras (\emph{Rules Based}) e Dirigido a dado (\emph{Data-Driven}) são usados para modificar um material existente.
+\end{inparaenum}
+
+\subsection*{Método de composição}
+
+Em geral, o procedimento de composição se deu a partir da execução de um comando \emph{m21} com argumentos explicados na seção \ref{sec:resultados}: \begin{inparaenum}[\itshape i)\upshape]
+\item gerar um material musical com base em uma colagem de uma obra no corpus do Music21;
+\item o material colado será submetido a subtração de compassos, aleatoriamente;
+\item dos compassos restantes, quaisquer notas serão agrupadas como um evento;
+\item destes agrupamentos, as oitavas serão embaralhadas; e
+\item do bloco harmônico resultante, pode ser que alguma nota fique deslocada, gerando figuras.
+\end{inparaenum}
+
+Busquei notar densidades, fraseado e pontos de finalização ``naturais'' do material harmônico resultante Tais parâmetros eram editados no MuseScore, sendo que algumas interferências não previstas foram incluídas. Após edição, ocorreu o processo de editoração no Lilypound para melhor visualização dos resultados.
+
+Por último, o material pré-composicional foi editado no \cite{musescore_2015} e posteriorente diagramado no \cite{lilypond_2015}.

@@ -1,0 +1,133 @@
+#!/usr/bin/python
+
+from optparse import OptionParser
+import re
+import sys
+import m21utils as m21
+import tools
+
+#import inspect
+
+# PROGRAMA PRINCIPAL
+PROG = "M21"
+VERSION = "0.0.1"
+description = "For computer assisted musicology and composition"
+parser = OptionParser(usage='usage: %prog [OPTIONS, [ARGS]]',
+                          version='%s %s' % (PROG, VERSION),
+                          description=description)
+
+# Opcoes do programa
+opt =  [("s", "search-only", "store_true", "Search in corpus for words in --composer and or --index arguments. Ex.: --composer bach --index bwv1x"),
+        ("c", "composer", None, "write report with specific corpora.\nCAUTION: you must use this according\nhttp://web.mit.edu/music21/doc/systemReference/referenceCorpus.html#referencecorpus"),
+        ("i", "index", None, "Search in corpus specific index of corpora; you must use this with -c option, according available corpora in \nhttp://web.mit.edu/music21/doc/systemReference/referenceCorpus.html#referencecorpus"),
+        ("C", "CAC", "store_true", "Or simple \"Computer Assisted Composition\". With this option you will \"glitch\" a specific piece, as instance, with --composer/--index options, --xml option or --tiny-notation option. Adding --fragmentize option with a value (ex: --fragmentize 4, max 6), you will apply a \"fragmentation\" on input. You can add --no-scramble-notes, --no-scramble-octaves and  arguments."),
+        ("n", "no-scramble-notes", "store_true", "with this option, the program will not apply a scramble on list of extracted notes, before create chords"),
+        ("N", "no-scramble-octaves", "store_true", "With this option, the program will not apply a scramble on list of extracted octaves, before create chords"),
+        ("g", "glitch", None, "Apply a\'glitch\' on extracted notes and octaves; the given argument is the maximum of a random operation. This operation can be a choice of a 6 values: (0) The generated chord will be arranged in closed position; (1) the generated chord will be arranged in semi-closed position; (2) the generated chord will be arranged in super open position; (3) one note will be separated from chord, like an one grace note; (4) two notes will be separated from chord (if this chord have at least, two notes); (5) apply bordadure [? translate ?], and then a chord"),
+        ("m", "measures", None, "Select measures from a stream (corpus, xml or tinynotation)"),
+        ("R", "reducte", "store_true", "Reducte some stream to piano staff "),
+        ("A", "tonal-harmonic-analysis", None, "Analyse some stream in tonal way, given some key"),
+        ("S", "show", "store_true", "show stream in some editor (musescore default)"),
+        ("x", "xml", None, "parse a musicXml file; can be a local one or http url"),
+        ("t", "tinynotation", None, "parse a tiny-notation (ex: --tiny-notation \"2/16 E4 r f# g=lastG trip{b-8 a g} c\"."),
+        ("T", "title", None, "used to give a title. (ex: --title \"My improvised music\""),
+        ("a", "author", None, "used to give a author. (ex: --author \"J.S. Bach\""),
+        ("r", "transpose", None, "transpose stream notes by semitones (ex.: --transpose 4 will transpose to a ascendent major third and --transpose -4 will transpose to a descendent major third"),
+        ("I", "invert", "store_true", "invert stream intervals by semitones. No need arguments"),
+        ("L", "lytexify", None, "Create a .lytex file from a .ly file, and compiles it to a .tex file. Used only in the context of documentation of this software")]
+
+
+# Create a list of tuples
+# to create a list of options
+for word in opt:
+    v = "_".join(word[1].split("-"))
+    a = "-%s" % word[0]
+    b = "--%s" % word[1]
+    if word[2] != None:
+        parser.add_option(a, b, action=word[2], help=word[3], dest=v, default=False)
+    elif word[1] == "measures":
+        parser.add_option(a, b, action=word[2], help=word[3], dest=v, default=False, nargs=2)
+    else:
+        parser.add_option(a, b, help=word[3], dest=v, default=False)
+
+# Opcoes para analise grafica, de acordo com as classes pre-definidas no music21
+opt_analysis = [
+    "PlotStream",
+    "PlotHistogramPitchSpace",
+    "PlotHistogramPitchClass",
+    "PlotHistogramQuarterLength",
+    "PlotScatterPitchSpaceQuarterLength",
+    "PlotScatterPitchClassQuarterLength",
+    "PlotScatterPitchClassOffset",
+    "PlotScatterPitchSpaceDynamicSymbol",
+    "PlotHorizontalBarPitchSpaceOffset",
+    "PlotHorizontalBarPitchClassOffset",
+    "PlotScatterWeightedPitchSpaceQuarterLength",
+    "PlotScatterWeightedPitchClassQuarterLength",
+    "PlotScatterWeightedPitchSpaceDynamicSymbol",
+    "Plot3DBarsPitchSpaceQuarterLength",
+    "PlotWindowedKrumhanslSchmuckler",
+    "PlotWindowedKrumhanslKesslerm",
+    "PlotWindowedAardenEssen",
+    "PlotWindowedSimpleWeights",
+    "PlotWindowedBellmanBudge",
+    "PlotWindowedTemperleyKostkaPayne",
+    "PlotWindowedAmbitus",
+    "PlotDolan"
+]
+
+for string in opt_analysis:
+    substrings = [s for s in re.findall('[A-Z][a-z0-9]*', string)]
+    s = "_".join('%s' % (ss[0].lower()+ss[1:]) for ss in substrings)
+    ss = "-".join('%s' % (ss[0].lower()+ss[1:]) for ss in substrings)
+    parser.add_option("--%s" % (ss), action="store_true", dest=s, default=False, help="analysis graph with %s class" % (string))
+    
+
+# Capturar os argumentos passados pelo 
+(options, args) = parser.parse_args()
+
+print args
+
+# Stream: peca composta, analise, inversao etc.
+# Resultado final do procedimento
+_stream = None
+
+# On Search
+if(options.search_only):
+    for data in m21.search_only(options):
+        print data
+
+# On get
+if(options.xml or options.tinynotation or (options.composer and options.index and not options.search_only)):
+    _stream = m21.get(options)
+    print _stream
+
+# On CAC
+if(options.CAC and options.glitch):
+    _stream = m21.glitch(_stream, options)
+
+# On reverse or inverse
+if(options.transpose or options.invert):
+    m21.invert_and_or_transpose(_stream, options)
+
+# On Analisis
+for key, value in options.__dict__.iteritems():
+    if key.startswith('plot'):
+        if(options.__dict__[key]):
+            _type = ''.join([ss[0].upper()+ss[1:] for ss in key.split("_")])
+            m21.plot(_stream, _type)
+
+if(options.measures):
+    print options
+    _stream =  m21.select_measures(_stream, options)
+
+if(options.reducte):
+    _stream = m21.reducte_piano(_stream, options)
+
+
+# On show
+if(options.show):
+    m21.show(_stream, options)
+    
+if(options.lytexify):
+     tools.lytexify(options.lytexify)

@@ -1,0 +1,12 @@
+\section{Resultados}\label{sec:resultados}
+
+Comandos foram utilizados para a estruturação de ``Corais'', pequenas peças didáticas de, por colagem de materiais da bachianos, recorte por técnica \emph{glitch}\footnote{Aplicação de recortes indeterminados  sobre um material pré existente.}, e readequações de discurso harmônico pós-tonal. Resultados foram possíveis com a implementação da a opção \verb|--CAC| ou \verb|-C|, como no código abaixo. No entanto esta é apenas uma \emph{flag} indicativa que um material será reconfigurado. Inclui, até o momento, a \emph{flag} \verb|--glitch| ou \verb|-g|, que recorta o material fornecido.
+
+\begin{listing}
+\begin{minted}[linenos,frame=leftline,fontsize=\footnotesize]{python}
+./main.py --show --CAC --composer bach --index bwv1 --glitch 2
+./main.py -S -C -c bach -i bwv1 -g 2
+\end{minted}
+\end{listing}
+
+\input{../examples/bwv1/bwv1_doc}

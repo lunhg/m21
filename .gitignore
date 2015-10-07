@@ -1,0 +1,12 @@
+**.dep
+**.aux
+**.brf
+**.log
+**.bbl
+**.snippet*
+**~
+**.pyc
+**.synctex.gz
+**.toc
+**.blg
+**#
