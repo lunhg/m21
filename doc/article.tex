@@ -1,85 +1,22 @@
 \documentclass[12pt]{article}
 
-\usepackage{sbc2003}
-
-\usepackage{graphicx,url}
-
-\usepackage[brazil]{babel}   
-\usepackage[utf8]{inputenc}
-
-% Para estilização dos códigos
-\usepackage{minted}
-
-% Para lista em linhas
-\usepackage{paralist}
-
-% Identar primeiros parágrafos
-\usepackage{indentfirst}
-
-%TODO
-\usepackage[colorinlistoftodos]{todonotes}
-
-\usepackage{minted}
-
-\usepackage{array}
-
-%---
-% Pacote para listas em uma linha
-%---
-\usepackage{paralist}
-
-\title{Colagem, recorte e erros em um processo composicional utilizando o Music21.}
-
-\author{Guilherme Lunhani\inst{1}}
-
-\address{Instituto de Artes e Design --
-         Universidade Federal de Juiz de Fora \\
-         Juiz de Fora, MG
-         \email{gcravista@gmail.com}
-}
+\input{./pacotes}
+\input{./cabecalho}
 
 \begin{document}
 
 \maketitle
 
-\begin{abstract}
-This article describes a case study in Computer Generated Assistance, for music analysis and didactic composition. A Python command was programmed to automate routines based on \cite{music21_2015} library, such: selection, cluster and fragmentation from a document in J.S.Bach's corpus. Some compositional exercises were used to test a operation, called \emph{glitch}, in this corpus. In addition, \cite{musescore_2015} and \cite{lilypond_2015} were used to edit and diagram scores. At the end, comment on bugs, compositional problems and future plans of composition.
-\end{abstract}
-
-\begin{resumo}
-Este artigo descreve um estudo de caso em Assitência Gerada por Computador para análise musical e composição didática. Um comando {Python} foi programado para automatizar rotinas da biblioteca \cite{music21_2015} como: seleção, agrupamento e fragmentação de um documento no corpus bachiano. Alguns exercícios composicionais foram usados para testar uma operação \emph{glitch}, neste corpus. Adicionalmente,  \cite{musescore_2015} e \cite{lilypond_2015} foram utilizados para edição. Ao final comentarei \emph{bugs}, problemas composicionais  e planos futuros de composição.
-\end{resumo}
-
+\input{./resumos}
 \input{./01-Introducao}
 \input{./02-Contexto}
-\input{./03-Codigo}
-\input{./04-M21}
-\input{./05-Resultados}
-
-\section{Conclusão}\label{sec:conclusao}
-
-Duas funcionalidades do Music21 foram observadas: Musicologia Assistida por Computador  e Composição Assistida por Computador (CAC).  Da documentação e do corpus do \emph{software}, programei rotinas que lidassem com aquilas tarefas que considerei demasiadamente laboriosas. Para isso proponho comandos que  podem auxiliar em tarefas cotidianas, composicionais ou analíticas. 
-
-Da rotina para composição/análise, cito a busca no corpus, de uma obra específica ou obras pelo nome do compositor. Das rotinas analíticas, enumero \begin{inparaenum}[\itshape a)\upshape]
-\item identificação dos graus
-\item estruturação intervalar de blocos harmônicos
-\item plotamento de histogramas de classes de altura. Das rotinas composicionais, enumerei procedimentos para uma composição por fragmentação (\emph{glitch}):
-\item colagem de fragmentos de uma partitura
-\item compressão de melodias em blocos harmônicos dos fragmentos resultantes
-\item troca de oitavas com as notas deste bloco
-\item possível fragmentação do bloco resultante em figuras ou arpejos
-\end{inparaenum}Existe adicionalmente um $bug$ que ocorre por fatores lógicos, próprio da atividade de programação realizada, mas ainda não resolvido. Possivelmente o compositor pode lidar com dados nulos. Caso a peça de entrada seja muito grande, pode acontecer do programa não responder. 
-
-Foi observado uma versatilidade de materiais pré-composicionais gerados, bem como a possibilidade de improvisar com estes materiais. O exemplo apresentado na seção \ref{sec:resultados} foi feito em algumas horas. Com isso espero oferecer aos docentes e discentes em composição musical uma ferramenta alternativa para atividades diáticas em processos criativos.
-
-\section{Planos Futuros}
-
-Correção do \emph{bug} e implementação de um novo comando que fragmente várias obras do corpus em um único material pré-composicional (comando \verb|--poop| ou \verb|-p|). Continuação de novas composições para o ciclo.
-
-\section{Agradecimentos}
-
-Ao Guilherme Rafael Soares por apresentar a biblioteca \emph{music 21}. Aos desenvolvedores do \emph{musescore} e \emph{lilypound}. FAPEMIG pelo financiamento da pesquisa.
-
+\input{./03-Justificativa}
+\input{./04-Metodo}
+\input{./05-M21}
+\input{./06-Resultados}
+\input{./07-Conclusao}r
+\input{./08-Planos_futuros}
+\input{./09-Agradecimentos}
 
 \clearpage\clearpage
 \bibliographystyle{sbc}

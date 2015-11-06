@@ -1,10 +1,31 @@
 \section{Metodologia}\label{sec:metodo}
 
-\begin{inparaenum}[\itshape i)\upshape]
-\item Escolha de um procedimento eletroacústico para gerar material partitural: colagem e \emph{glitch};
-\item este procedimento necessita das implementações dos itens \ref{it:corpus} e \ref{it:glitch};
-\item\label{it:corpus} implementação de busca de obras no corpus (colagem);
-\item\label{it:glitch} implementação de fragmentação da obra encontrada;
-\item implementação de anotação de idéias; e
-\item implementação de diferentes análises visuais de um material partitural.
+\subsection*{Organização dos códigos}
+
+O programa foi separado em três arquivos: \begin{inparaenum}[\itshape i)\upshape]
+\item um binário em \emph{Python} que realiza tarefas gerais da linha de comando (\emph{m21});
+\item rotinas do Music21 (\emph{m21utils.py}); e 
+\item um para rotinas externas (\emph{tools.py})
+\end{inparaenum}\footnote{Todos códigos, exemplos e documentação estão disponíveis \url{https://www.github.com/jahpd/m21}.}.
+
+\subsection*{Categorização do software}
+
+Nas palavras de \cite[p.~x-xiii]{cope_prefacio_2008}, o \emph{m21} pode ser classificado como uma ferramenta para uma Assistência Gerada por Computador (\emph{Computer Generated Assistance} ou CGA). Dentro das sub-categorias de CGA propostas por Cope, o \emph{m21} pode ser incuído nos três modos abaixo:\begin{inparaenum}[\itshape 1)\upshape]
+\item uso de uma Linguagem de Programação em texto (PLs)(\emph{Programming Languages}) ao invés de uma linguagem de programação visual (VPL); 
+\item o material partitural é gerado para performance humana ao invés de uma performance eletroacústica;
+\item utilização de regras diversas (\emph{Rules Based}) e composição dirigida por dados (\emph{Data-Driven}).
 \end{inparaenum}
+
+\subsection*{Método de composição}
+
+Em geral, o procedimento de composição se deu a partir da execução de um comando \emph{m21}, como explicitado nas seções \ref{sec:m21} e \ref{sec:resultados}.
+
+O passos executados pelo comando, no exemplo apresentado na seção \ref{sec:resultados}, foram \begin{inparaenum}[\itshape i)\upshape]:x
+\item subtração de compassos, aleatoriamente;
+\item dos compassos restantes, notas pertencentes a este compasso foram suprimidas em um bloco harmônico; e
+\item destes blocos, as oitavas serão embaralhadas para gerar simultanóides \cite{koellreutter_introducao_1987};
+\end{inparaenum}
+
+O material resultante do processo acima foi editado no \cite{musescore_2015}. Algumas interferências não previstas foram incluídas. Seguimos com a observação de ``organicidades'' próprias do material pré-composicional: fraseados, pontos culminantes e pontos de relaxamento, criando um pequeno discurso musical.
+
+Por último, a peça foi diagramada no \cite{lilypond_2015}.

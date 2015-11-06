@@ -1,21 +1,36 @@
 \section{Trabalhos relacionados}\label{sec:trabalhos}
 
-Durante uma pesquisa de mestrado, sobre \emph{live coding}, tive contato com o Music21 que, segundo \cite{soares_luteria_2015}:
+Este trabalho iniciou com a investigação do Music21 que, segundo \cite{soares_luteria_2015}:
+\ \\
+\begin{quote}
+É uma biblioteca projetada para trabalhar com manipulação e análise de corpus de arquivos partituráveis. Prepara a conversão entre diversos arquivos de dados musicais.(\ldots) Music21 tem uma abordagem voltada para uma "musicologia assistida por computador" e já tem incorporada em suas classes algumas ferramentas comuns a esta prática como: numeração de grau funcional de acorde, numeração de classes de altura usando a classificação de Allen Forte : a implementação dos algoritmos de detecção de tonalidade elaborado por Krumhansl (1990) e aperfeiçoada por Temperley (2001), busca de padrões como transposições e inversões e outros.\cite[p.~71-72]{soares_luteria_2015}
+\end{quote}
+\ \\
+
+Por um lado, o desenvolvimento do \emph{m21} busca reforçar a utilização de métodos estatísticos aplicados à musicologia\footnote{Como por exemplo, aqueles propostos por \cite{guigue_estetica_2011}.}. Por outro encoraja a transposição de técnicas, nas palavras de  \cite{cascone_aesthetics_2000}, pós-digitais, do universo eletroacústico para o universo da notação em partitura. No caso do universo eletroacústico, Cascone esclarece:
+\ \\
 
 \begin{quote}
-É uma biblioteca projetada para trabalhar com manipulação e análise de corpus de arquivos partituráveis. Prepara a conversão entre diversos arquivos de dados musicais. (\ldots) Music21 tem uma abordagem voltada para uma "musicologia assistida por computador" e já tem incorporada em suas classes algumas ferramentas comuns a esta prática como: numeração de grau funcional de acorde, numeração de classes de altura usando a classificação de Allen Forte : a implementação dos algoritmos de detecção de tonalidade elaborado por Krumhansl (1990) e aperfeiçoada por Temperley (2001), busca de padrões como transposições e inversões e outros.\cite[p.~71-72]{soares_luteria_2015}
+A estética pós-digital foi desenvolvida em parte como resultado de uma experiência imersiva, de um trabalho em ambientes repletos de tecnologia digital: computadores, zumbido de \emph{fans}\footnote{``Ventiladores'' do \emph{cooler}.}, impressoras a laser produzindo documentos, sonificação de interfaces de usuário, e o barulho abafado de discos rígidos. Mas mais especificamente, surgia das falhas da tecnologia digital que surgiram neste novo trabalho: falhas, \emph{bugs}, aplicação de erros, quebras de sistema, clipagem, serrilhamento, distorção, quantização, e mesmo o ruído de fundo de placas de som são materiais crus que compositores procuram incorporar em sua música.\cite[p.~393]{cascone_aesthetics_2000}\footnote{Tradução de \emph{The "post-digital" aesthetic was developed in part as a result of the immersive experience of working in environments suffused with digital technology: computer fans whirring, laser printers churning out documents, the sonification of user-interfaces, and the muffled noise of hard drives. But more specifically. it is from the "failure" of digital technology that this new work has emerged: glitches, bugs, application errors, system crashes, clipping, aliasing, distortion, quantization noise, and even the noise floor of computer sound cards are the raw materials composers seek to incorporate into their music.}}
 \end{quote}
+\ \\
 
-Ao invés de compor adicionando informações aos dados musicais, busquei na \emph{Estética do Erro} \cite{cascone_aesthetics_2000} os procedimentos básicos para composição, explicados com mais detalhes na seção \ref{sec:metodo}. Resultados sonoros procedentes da colagem e do erro dependem muito do \emph{input}. Aplicar o mesmo algoritmo de erro para diferentes materiais, ou, aplicar diferentes erros para um único material, não resulta em um produto homogêneo.
+Neste sentido, foi prototipada uma tradução da citação acima, para um universo de peças do corpus do Music21. Com a aplicação de um único algoritmo de erro, em diferentes peças do corpus (como por exemplo as de J.S.Bach), são geradas harmonias características de um período que, que segundo Soares, existia:
 
-Busquei então utilizar diferentes documentos do \emph{corpus}, e um mesmo erro para realizar um tipo de música que, segundo \cite[p.~18]{soares_luteria_2015}, existia intensamente ``antes da preocupação imediata com os timbres ou da era das manipulações de amostras sonoras - e de certa maneira ainda proto-serialista. Uma música por vezes chamada politonal, polimodal ou usando o termo de Straus (2004): pós-tonal.''. Sendo um tipo de composição que não é nova, mas relevante do ponto de vista histórico e didático-composicional,  busquei elaborar uma ferramenta para ser usada em processos criativos musicais. 
+\ \\
+\begin{quote}
+(\ldots) antes da preocupação imediata com os timbres ou da era das manipulações de amostras sonoras - e de certa maneira ainda proto-serialista. Uma música por vezes chamada politonal, polimodal ou usando o termo de Straus (2004): pós-tonal.''.\cite[p.~18]{soares_luteria_2015}
+\end{quote}
+\ \\
 
-\subsection*{Questões pessoais}
+Realizamos portanto, um cruzamento de espaços conceituais da composição pós-tonal com procedimentos de falhas. Não sendo um tipo composição nova, é relevante do ponto de vista didático. Neste sentido busquei elaborar uma ferramenta para ser usada em processos criativos musicais, considerando os fatores pedagógico, histórico e analítico.
 
-Não deixo de mencionar uma antiga conversa com o compositor Franscisco Zmekhol Nascimento de Oliveira, que levou-me a compor segundo regras arbitrárias, na contingência do momento. Isto é, uma música para cada dia da existência. 
+\subsection*{Questões diversas}
 
-Ao realizar o mesmo procedimento de composição de um mesmo documento do \emph{corpus} bachiano, o material pré-composicional resultante deve ser diferente de qualquer outro. 
+Comentamos  antigas conversas com o compositor Franscisco Zmekhol Nascimento de Oliveira, que sugeria compor peças com um mesmo processo, mas que segundo a contingência do momento, seriam diferenciadas por seus eventos musicais. 
 
-Para realizar tecnicamente, valores não-determinados em operações determinísticas são utilizados.
+Esta abordagem encontrou respaldo nas estratégias composicionais sugeridas por partituras-planimétricas, propostas por \cite{koellreutter_introducao_1987}. Esta abordagem exercitar a improvisação discursos musicais, ao articular sons e silêncios. 
 
-Para compor-improvisar com os materiais resultantes, apliquei princípios de articulação do som pelo silêncio, elaborados por rascunhos de partituras-planimétricas, utilizadas por \cite{koellreutter_introducao_1987}.
+A articulação de sons e silêncios, por sua vez, é semelhante aos fraseados dos corais de J.S. Bach.
+
+
