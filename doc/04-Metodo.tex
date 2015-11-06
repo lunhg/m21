@@ -16,16 +16,17 @@ Nas palavras de \cite[p.~x-xiii]{cope_prefacio_2008}, o \emph{m21} pode ser clas
 \item utilização de regras diversas (\emph{Rules Based}) e composição dirigida por dados (\emph{Data-Driven}).
 \end{inparaenum}
 
-\subsection*{Método de composição}
+\subsection*{Método de composição}\label{sec:metodo_composicao}
 
-Em geral, o procedimento de composição se deu a partir da execução de um comando \emph{m21}, como explicitado nas seções \ref{sec:m21} e \ref{sec:resultados}.
-
-O passos executados pelo comando, no exemplo apresentado na seção \ref{sec:resultados}, foram \begin{inparaenum}[\itshape i)\upshape]:x
+Em geral, o procedimento de composição se deu a partir da execução do comando \emph{m21}, como explicitado nas seções \ref{sec:m21}. O comando em questão realiza a:\begin{inparaenum}[\itshape i)\upshape]
 \item subtração de compassos, aleatoriamente;
-\item dos compassos restantes, notas pertencentes a este compasso foram suprimidas em um bloco harmônico; e
-\item destes blocos, as oitavas serão embaralhadas para gerar simultanóides \cite{koellreutter_introducao_1987};
+\item compressão de notas contidas nos compassos restantes em um bloco harmônico;
+\item embaralhamento de oitavas das notas do bloco, dentro dos limites da tessitura do piano, para derivar novos simultanóides \cite{koellreutter_introducao_1987};
+\item eventualmente, erros não previstos acontecem por \emph{bugs} inerentes ao programa desenvolvido. Por exemplo, notas que deveriam ser comprimidas, segundo regra \emph{ii}, não são comprimidas.
 \end{inparaenum}
 
-O material resultante do processo acima foi editado no \cite{musescore_2015}. Algumas interferências não previstas foram incluídas. Seguimos com a observação de ``organicidades'' próprias do material pré-composicional: fraseados, pontos culminantes e pontos de relaxamento, criando um pequeno discurso musical.
+O embaralhamento pode resultar em acordes por 5 tipos funcionais, dependendo do grau de erro escolhido pelo usuário (0 a 4): \emph{0)} o simultanóide será arranjado em uma posição fechada; \emph{1)} o simultanóide será arranjado em uma posição semi-aberta; \emph{2)} o simultanóide será arranjado em uma posição super-aberta; \emph{3)} uma nota, aleatória, será separada do simultanóide, como uma appogiatura; \emph{4)} duas notas, aleatórias, serão serparadas do simultanóide (se este tiver pelo menos três notas).
+
+O material resultante do processo acima foi editado no \cite{musescore_2015}. Algumas interferências pessoais, não previstas, foram incluídas. Seguimos com a observação de ``organicidades'' próprias do material gerado: fraseados, pontos culminantes e pontos de relaxamento, criando um pequeno discurso musical.
 
 Por último, a peça foi diagramada no \cite{lilypond_2015}.

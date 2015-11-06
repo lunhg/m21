@@ -5,23 +5,5 @@
 Um manual de instalação e operação mais detalhado está disponível junto com o código-fonte\footnote{Disponível em \url{https://www.github.com/jahpd/m21/doc/manual.pdf}.}.
 
 \include{./tabela}
- 
-\subsection{Análise orientada por gráficos}
-
-Histogramas e outros gráficos podem ser gerados para de diferentes aspectos de uma música.  Por exemplo, na figura \ref{fig:pitch-space-bwv1-histogram}, apresentamos um histograma do espaço de alturas (\emph{pitch-space}) do sexto movimento do BWV1 de J.S.Bach. O gráfico foi gerado com o auxílio  do comando apresentado no código \ref{code:plot}
-
-\begin{figure}
-\begin{minted}[linenos,frame=leftline,fontsize=\scriptsize]{python}
-./m21 --show --composer bach --index bwv1 --plot-histogram-pitch-space
-\end{minted}
-\label{code:plot}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[scale=0.71]{../analysis/bwv1/pitch-class.png}
-  \caption{Histograma de \emph{pitch-class} do BWV1.6, utilizando o comando \textbf{Fonte}: autor.}
-    \label{fig:pitch-space-bwv1-histogram}
-\end{figure}
 
 %  \verb|./m21 --show --composer bach --index bwv1 --plot-histogram-pitch-space|. \textbf{Fonte}: autor.}
