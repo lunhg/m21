@@ -19,7 +19,7 @@ def lytexify(lilypondpath):
 
     # catch generated files
     gen = re.findall('[A-Za-z0-9]{2}/lily-[A-Za-z0-9]*', filedata)[0]
-    print gen
+    print(gen)
 
     # write new path
     f = open("%s.tex" % lilypondpath, 'w')

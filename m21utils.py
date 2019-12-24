@@ -19,7 +19,7 @@ def search_stream(options):
     elif options.composer and options.index:
         s = "%s/%s" % (options.composer, options.index)
     metadata = corpus.search(s)
-    print "m21> found %d entries for %s" % (len(metadata), s)
+    print("m21> found %d entries for %s" % (len(metadata), s))
     return metadata
 
 def choice_measures(part):
@@ -32,7 +32,7 @@ def choice_measures(part):
     if(not b>a):
         b = a + 1
 
-    print "measures: %d:%d" % (a, b)
+    print("measures: %d:%d" % (a, b))
     matrix = [measure for measure in part.measures(a, b)]
     return [matrix[i] for i in range(4,len(matrix))]
 
@@ -40,7 +40,7 @@ def verify_and_map_notes_in_measure(element):
     """Checar se existe alguma estrutura xml que engloba as notas; verificado aps extracao de algumas pecas do mozart"""
     _dict = {"notes": [], "octaves": []} 
     looper =  None
-    print element.classes
+    print(element.classes)
     if element.classes[0] == 'Slur':
         looper = element.getSpannedElements()
     elif element.classes[0] == 'Measure':
@@ -59,7 +59,7 @@ def verify_and_map_notes_in_measure(element):
 
 def scramble_notes_if(_dict, options):
     """Scramble dictionary of notes and octaves"""
-    print _dict
+    print(_dict)
     if not options.no_scramble_notes: 
         _dict["notes"] = sorted(_dict["notes"], key = lambda x: random.random()) 
     if not options.no_scramble_octaves: 
@@ -84,14 +84,12 @@ def glitch(aStream, options):
     - apos isso, o compositor deve verificar a ordem dos intervalos  livremente, organizando assim uma CAC. 
     """
     newStream = stream.Stream()
-
     if aStream.metadata is not None:
-        print "%s, %s" % (aStream.metadata.composer, aStream.metadata.title)
-
+        print("%s, %s" % (aStream.metadata.composer, aStream.metadata.title))
     # Extrai as partes do stream original
     for part in aStream.parts:
         
-        print "=======================\n%s" % part.id
+        print("=======================\n%s" % part.id)
 
         # Escolhe randomicamente uma secao da peca para ser modificado
         measures = choice_measures(part)
@@ -103,7 +101,7 @@ def glitch(aStream, options):
             _dict = scramble_notes_if(_dict, options)
             _dict = create_chord(_dict)
 
-            print _dict["chord"]
+            print(_dict["chord"])
       
             # Escolher:
             # 5: bordadura 
@@ -211,6 +209,7 @@ def find_element(p,t):
     return -1
 
 def search_only(options):
+    print("m21> searching...")
     metadata = search_stream(options)
     datas = [data.sourcePath for data in metadata]
     return datas
@@ -261,10 +260,11 @@ def plot(_stream, t):
         else:
             graph.plotStream(_stream, t)
     except Exception as e:
-        print "m21> %s: %s" % (e, _stream)
+        print("m21> %s: %s" % (e, _stream))
         exit
 
 def show(_stream, options):
+    print(_stream)
     if((type(_stream) is not None) and _stream.classes[0] is 'Part'):
         now = datetime.datetime.now()
         _s = stream.Stream()

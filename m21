@@ -86,8 +86,6 @@ for string in opt_analysis:
 # Capturar os argumentos passados pelo 
 (options, args) = parser.parse_args()
 
-print args
-
 # Stream: peca composta, analise, inversao etc.
 # Resultado final do procedimento
 _stream = None
@@ -95,12 +93,11 @@ _stream = None
 # On Search
 if(options.search_only):
     for data in m21.search_only(options):
-        print data
+        print(data)
 
 # On get
 if(options.xml or options.tinynotation or (options.composer and options.index and not options.search_only)):
     _stream = m21.get(options)
-    print _stream
 
 # On CAC
 if(options.CAC and options.glitch):
@@ -111,14 +108,15 @@ if(options.transpose or options.invert):
     m21.invert_and_or_transpose(_stream, options)
 
 # On Analisis
-for key, value in options.__dict__.iteritems():
+# for key, value in options.__dict__.iteritems():
+for key, value in options.__dict__.items():
     if key.startswith('plot'):
         if(options.__dict__[key]):
             _type = ''.join([ss[0].upper()+ss[1:] for ss in key.split("_")])
             m21.plot(_stream, _type)
 
 if(options.measures):
-    print options
+    print(options)
     _stream =  m21.select_measures(_stream, options)
 
 if(options.reducte):
@@ -127,6 +125,7 @@ if(options.reducte):
 
 # On show
 if(options.show):
+    print(_stream)
     m21.show(_stream, options)
     
 if(options.lytexify):
