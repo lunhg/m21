@@ -1,121 +1,83 @@
-from Tkinter import *
-from main import *
+from tkinter import Tk, Frame, Menu, Toplevel, Button
 
-NAME = "Mupy"
-VERSION = "0.0.1"
 
-class App:
-    def __init__(self, root):
+class M21(Frame):
 
-        # frame
-        self.frame = Frame(root)
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.title = kwargs.get('title')
+        self.initUI()
 
-        # inserir no root
-        self.frame.pack()
+    def initUI(self):
+        # Base title
+        self.master.title(self.title)
 
-        # fazer menu
-        menu = Menu(root)
-        root.config(menu=menu)
-    
-        filemenu = Menu(menu)
-        menu.add_cascade(label="File", menu=filemenu)
-        filemenu.add_command(label="New", command=self.newFile)
-        filemenu.add_command(label="Open...", command=self.openFile)
+        # Main menu
+        menubar = Menu(self.master)
+
+        # Filemenu
+        filemenu = Menu(menubar, tearoff=0)
+        filemenu.add_command(label="New",        command=self.__pass__)
+        filemenu.add_command(label="Open",       command=self.__pass__)
+        filemenu.add_command(label="Save",       command=self.__pass__)
+        filemenu.add_command(label="Save as...", command=self.__pass__)
+        filemenu.add_command(label="Close",      command=self.__pass__)
         filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=self.quit_frame)
+        filemenu.add_command(label="Exit",       command=self.master.quit)
 
-        helpmenu = Menu(menu)
-        menu.add_cascade(label="Help", menu=helpmenu)
-        helpmenu.add_command(label="About...", command=self.about)
+        # Edit menu
+        editmenu = Menu(menubar, tearoff=0)
+        editmenu.add_command(label="Undo",       command=self.__pass__)
+        editmenu.add_separator()
+        editmenu.add_command(label="Cut",        command=self.__pass__)
+        editmenu.add_command(label="Copy",       command=self.__pass__)
+        editmenu.add_command(label="Paste",      command=self.__pass__)
+        editmenu.add_command(label="Delete",     command=self.__pass__)
+        editmenu.add_command(label="Select All", command=self.__pass__)
 
-        
-        # Inputs
-        texts = [
-            "search", 
-            "fragmentize",
-            "scramble pitch",
-            "scramble octave",
-            "show original",
-            "process"
-            ]
+        # tools menu
+        toolsmenu = Menu(menubar, tearoff=0)
+        toolsSubmenuShowIn = Menu(toolsmenu)
+        toolsSubmenuSearchIn = Menu(toolsmenu)
 
-        self.inputs = []
-        for i in range(0, len(texts)):
-            _input = 0
-            _frame = Frame(self.frame)
-            if i == 0:       
-                _label = Button(_frame, text=texts[i],command=self.search).grid(row=i,column=1)
-                _input = Entry(_frame)
-                _input.grid(row=i, column=0)
-                _frame.grid()
-            if i == 1:
-                _label = Label(_frame, text=texts[i]).grid(row=i)
-                for j in range(6):
-                    v = IntVar()
-                    rb = Radiobutton(_frame, text=j, variable=v, value=j).grid(row=i+1,column=j)
-                
-            elif i >= 2 and i<5:
-                _input = Checkbutton(_frame, text=texts[i])
-                _input.grid(row=i+1, column=j, sticky=W)
-            else:
-                _input = Button(_frame, text=texts[i], command=self.processar)
-                _input.grid(row=i+1)
+        # tools submenu show in
+        toolsSubmenuShowIn.add_command(label="Musescore")
+        toolsSubmenuShowIn.add_command(label="Frescobaldi")
 
-            _frame.grid(row=i)
-            self.inputs.append(_input)
-        
-        # Console
-        term = Frame(self.frame, width=300, height=300)
-        term.grid(row=7)
-        self.wid = term.winfo_id()
-        
-        # rodar
-        root.mainloop()
-    
-    def search():
-        o = Object()
-        words = self.inputs[0].get().split(" ")
-        command({"--search-only": True, "composer": words[0], "index": words[1]})
-        
-    def processar():
-        
-        i = self.inputs[1].get()
-        n, o, _o = 0
-        if self.inputs[3].get() == False:
-            n = ""
-        else:
-            n = "-n"
+        # tools submenu search in
+        toolsSubmenuSearchIn.add_command(label="Core Corpus")
+        toolsSubmenuSearchIn.add_command(label="Local Corpus")
 
-        if self.inputs[4].get() == False:
-            n = ""
-        else:
-            n = "-o"
+        # add tools's submenus to itself
+        toolsmenu.add_cascade(label="Show in",
+                              menu=toolsSubmenuShowIn, underline=0)
+        toolsmenu.add_cascade(label="Search in",
+                              menu=toolsSubmenuSearchIn, underline=0)
 
-        if self.inputs[5].get() == False:
-            n = ""
-        else:
-            n = "-O"
-     
-    def command(options):
-        command = "python main.py"
-        for k,v in options:
-            command += " --%s %s" % (k, v)
-        
-        xterm = "xterm -into %d -geometry 40x20 &" % (self.wid, command)
-        os.system(xterm)
+        # Helpmenu
+        helpmenu = Menu(menubar, tearoff=0)
+        helpmenu.add_command(label="Help Index", command=self.__pass__)
+        helpmenu.add_command(label="About...",   command=self.__pass__)
 
-    def newFile():
-        print "=> Creating new file"
+        # Join
+        menubar.add_cascade(label="File", menu=filemenu)
+        menubar.add_cascade(label="Edit", menu=editmenu)
+        menubar.add_cascade(label="Tools", menu=toolsmenu)
+        menubar.add_cascade(label="Help", menu=helpmenu)
 
-    def openFile():
-        print "=> new file"
+        self.master.config(menu=menubar)
 
-    def quit_frame():
-        print "=> Exiting"
-        frame.quit
-        
-    def about():
-        print "=> about"
+    def onExit(self):
+        self.quit()
 
-# App
-app = App(Tk())
+    def __pass__(self):
+        filewin = Toplevel(self.master)
+        button = Button(filewin, text="Do nothing button")
+        button.pack()
+
+
+def main(**kwargs):
+    root = Tk()
+    root.geometry(kwargs.get('geometry'))
+    app = M21(title=kwargs.get('title'))
+    root.mainloop()
