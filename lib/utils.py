@@ -1,29 +1,59 @@
-from music21 import *
+import music21
 import math
 import random
 import datetime
-#import re
+import os
+import re
 
-# Funcoes
+
 def rnd(max):
-    """Um numero randomico"""
-    return math.floor(random.random() * max)
-    
+    """Generate a simple random number
 
-def search_stream(options):
-    """Procura por um stream no corpus"""
-    if not options.index and options.composer:
-        s = options.composer
-    elif not options.composer and options.index:
-        s = options.index
-    elif options.composer and options.index:
-        s = "%s/%s" % (options.composer, options.index)
-    metadata = corpus.search(s)
-    print("m21> found %d entries for %s" % (len(metadata), s))
-    return metadata
+    Parameters:
+    max (int): the maximum integer allowed to be returned
+
+    Returns:
+    int: a floor integer
+    """
+    return math.floor(random.random() * max)
+
+
+def search_only(**kwargs):
+    """Search for a stream in music21.corpus. A stream is a music composed
+    by some `composer` and indexed by some `index`.
+    (ex.: composer=bach, index=bwv1). Used internally.
+
+    Parameters:
+    **kwargs:
+        - index: the index of stream
+        - composer: the author of composition
+
+    Returns:
+    list: a search's list
+
+    See more:
+    https://web.mit.edu/music21/doc/usersGuide/usersGuide_11_corpusSearching.html#simple-searches-of-the-corpus
+    """
+
+    # Exists composer, not index
+    if not kwargs.get('index') and kwargs.get('composer'):
+        s = kwargs.get('composer')
+
+    # Exists index, not composer
+    elif not kwargs.get('composer') and kwargs.get('index'):
+        s = kwargs.get('index')
+
+    # Exists both
+    elif kwargs.get('index') and kwargs.get('composer'):
+        s = "{}/{}".format(kwargs.get('composer'), kwargs.get('index'))
+
+    # Search it
+    metadata = music21.corpus.search(s)
+    datas = [data.sourcePath for data in metadata]
+    return datas
 
 def choice_measures(part):
-    """Escolhe randomicamente uma secao da peca para ser modificada"""
+    """Apply a random choice of sections in a piece to be modified"""
     l = len(part.measureOffsetMap())
     r = [int(rnd(l)) for i in [0, 1]]
     a = min(r[0], r[1])
@@ -38,14 +68,14 @@ def choice_measures(part):
 
 def verify_and_map_notes_in_measure(element):
     """Checar se existe alguma estrutura xml que engloba as notas; verificado aps extracao de algumas pecas do mozart"""
-    _dict = {"notes": [], "octaves": []} 
+    _dict = {"notes": [], "octaves": []}
     looper =  None
     print(element.classes)
     if element.classes[0] == 'Slur':
         looper = element.getSpannedElements()
     elif element.classes[0] == 'Measure':
         looper = element.notes
-    
+
     for el in looper:
         if el.classes[0] == 'Chord':
             for p in el.pitches:
@@ -60,9 +90,9 @@ def verify_and_map_notes_in_measure(element):
 def scramble_notes_if(_dict, options):
     """Scramble dictionary of notes and octaves"""
     print(_dict)
-    if not options.no_scramble_notes: 
-        _dict["notes"] = sorted(_dict["notes"], key = lambda x: random.random()) 
-    if not options.no_scramble_octaves: 
+    if not options.no_scramble_notes:
+        _dict["notes"] = sorted(_dict["notes"], key = lambda x: random.random())
+    if not options.no_scramble_octaves:
         _dict["octaves"] = sorted(_dict["octaves"], key = lambda x: random.random())
     return _dict
 
@@ -75,20 +105,20 @@ def create_chord(_dict):
 
     _dict["chord"] = chord.Chord(_dict["chord"])
     return _dict
-    
+
 def glitch(aStream, options):
     """ Esta secao vai selecionar alguns trechos da peca:
     - extrair arcordes das notas usadas em cada bloco
     - embaralhar a ordem vertical dos acordes
     - sequenciar estes acorde na sua ordem ritmica normal
-    - apos isso, o compositor deve verificar a ordem dos intervalos  livremente, organizando assim uma CAC. 
+    - apos isso, o compositor deve verificar a ordem dos intervalos  livremente, organizando assim uma CAC.
     """
     newStream = stream.Stream()
     if aStream.metadata is not None:
         print("%s, %s" % (aStream.metadata.composer, aStream.metadata.title))
     # Extrai as partes do stream original
     for part in aStream.parts:
-        
+
         print("=======================\n%s" % part.id)
 
         # Escolhe randomicamente uma secao da peca para ser modificado
@@ -102,9 +132,9 @@ def glitch(aStream, options):
             _dict = create_chord(_dict)
 
             print(_dict["chord"])
-      
+
             # Escolher:
-            # 5: bordadura 
+            # 5: bordadura
             # 6: arpejo
             # Aplica erros randomicos
             r = rnd(float(options.glitch))
@@ -120,9 +150,9 @@ def glitch(aStream, options):
             # 2: posicao superaberta
             elif r == 2:
                 _octaves = range(1, len(_dict["notes"])-1)
-                _chord = map(lambda i: "%s%s" % (_dict["notes"][i], i+1), _octaves) 
+                _chord = map(lambda i: "%s%s" % (_dict["notes"][i], i+1), _octaves)
                 newStream.append(chord.Chord(_chord))
-                
+
             # 3: Separa uma nota do acorde
             elif r == 3:
                 _stream = stream.Stream()
@@ -132,10 +162,10 @@ def glitch(aStream, options):
                 _note = note.Note(_pitch, _dur)
                 _dur2 = duration.Duration(0.5)
                 _chord = chord.Chord([_dict["chord"].pitches[i] for i in range(1,len(_dict["chord"].pitches)-1)], duration=_dur2)
-                
+
                 newStream.append(_note)
                 newStream.append(_chord)
-            
+
             ###
             # 4: Separa duas notas do acorde
             elif r == 4:
@@ -146,15 +176,15 @@ def glitch(aStream, options):
                 for i in range(2):
                     dur = duration.Duration(1.0/rnd(lp))
                     _notes.append(note.Note(_p[i], dur))
-                
+
                 dur0 = _durs[0].quarterLength
                 dur1 = _durs[1].quarterLength
-                                  
+
                 _rest = 1 - (dur0 + dur1)
                 _dur = duration.Duration(_rest)
-                
+
                 _chord = chord.Chord([_dict["chord"].pitches[i] for i in range(2,len(_dict["chord"])-2)], duration=_dur)
-                
+
                 newStream.append(_notes)
                 newStream.append(_chord)
             elif r == 5:
@@ -167,7 +197,7 @@ def glitch(aStream, options):
                 _rndindex = int(rnd(len(__durs)))
                 #print _rndindex
                 #print __durs[_rndindex]
-                    
+
                 _durs = [duration.Duration(__durs[_rndindex]) for i in [0,1,2]]
 
                 _notes = []
@@ -187,7 +217,7 @@ def glitch(aStream, options):
                 _rest = 1-(_durs[0].quarterLength+_durs[1].quarterLength+_durs[2].quarterLength)
                 _dur = duration.Duration(_rest)
                 _chord = chord.Chord([c.pitches[i] for i in range(3,len(c)-3)], duration=_dur)
-                
+
                 newStream.append(_notes)
                 newStream.append(_chord)
     # retorna o novo stream
@@ -205,14 +235,8 @@ def find_element(p,t):
           return i
       else:
           i +=1
-        
-    return -1
 
-def search_only(options):
-    print("m21> searching...")
-    metadata = search_stream(options)
-    datas = [data.sourcePath for data in metadata]
-    return datas
+    return -1
 
 def ordered_pitch_interval(notes):
     _result = []
@@ -275,7 +299,7 @@ def show(_stream, options):
         _s.show()
     else:
         _stream.show()
-   
+
 
 def invert_and_or_transpose(_stream, options):
     """Inverte ou transpoe um stream"""
@@ -301,4 +325,41 @@ def reducte_piano(_stream, options):
             c.addLyric(str(rn.figure))
 
     return _chords
-    
+
+
+def lytexify(lilypondpath):
+    """Create a .lytex, and compile a .tex file for use scores in LaTeX"""
+    # lytex file is a simple one line file
+    msg = "echo \\\lilypondfile\{%s.ly\} > %s.lytex"
+    os.system(msg % (lilypondpath, lilypondpath))
+
+    # compile lytex for specific output
+    s = lilypondpath.split("/")
+    s = s[:len(s)-1]
+    s = "/".join(s)
+    os.system("lilypond-book %s.lytex -o %s" % (lilypondpath, s))
+
+    # replace new path on compiled file
+    f = open("%s.tex" % lilypondpath, 'r')
+    filedata = f.read()
+    newdata  =filedata.replace("\input{", "\input{.%s/" % s)
+
+    # catch generated files
+    gen = re.findall('[A-Za-z0-9]{2}/lily-[A-Za-z0-9]*', filedata)[0]
+    print(gen)
+
+    # write new path
+    f = open("%s.tex" % lilypondpath, 'w')
+    f.write(newdata)
+    f.close()
+
+    # now we need to change auxiliary files (the generated ones in generated dir)
+    f = open("%s/%s-systems.tex" % (s, gen), 'r')
+    filedata = f.read()
+    f.close()
+    newdata = filedata.replace("includegraphics{", "includegraphics{.%s/" % s)
+
+    # write new path
+    f = open("%s/%s-systems.tex" % (s, gen), 'w')
+    f.write(newdata)
+    f.close()

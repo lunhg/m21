@@ -2,13 +2,12 @@
 
 from optparse import OptionParser
 import re
-import m21utils as m21
-from m21options import OPTIONS, GRAPHICAL_ANALYSIS_OPTIONS
-import tools
-from app import main
+import lib.utils as utils
+from lib.options import OPTIONS, GRAPHICAL_ANALYSIS_OPTIONS
+from lib.app import main
 
 # PROGRAMA PRINCIPAL
-PROG = "M21"
+PROG = "utils"
 VERSION = "0.0.1"
 description = "For computer assisted musicology and composition"
 parser = OptionParser(usage='usage: %prog [OPTIONS, [ARGS]]',
@@ -77,22 +76,35 @@ _stream = None
 
 # On Search
 if(options.search_only):
-    for data in m21.search_only(options):
+    search = None
+    if not options.index and options.composer:
+        search = utils.search_only(composer=options.composer)
+
+    elif options.index and not options.composer:
+        search = utils.search_only(index=options.index)
+
+    else:
+        search = utils.search_only(
+            index=options.index,
+            composer=options.composer
+        )
+
+    for data in search:
         print(data)
 
 # On get
 if(options.xml or
    options.tinynotation or
    (options.composer and options.index and not options.search_only)):
-    _stream = m21.get(options)
+    _stream = utils.get(options)
 
 # On CAC
 if(options.CAC and options.glitch):
-    _stream = m21.glitch(_stream, options)
+    _stream = utils.glitch(_stream, options)
 
 # On reverse or inverse
 if(options.transpose or options.invert):
-    m21.invert_and_or_transpose(_stream, options)
+    utils.invert_and_or_transpose(_stream, options)
 
 # On Analisis
 # for key, value in options.__dict__.iteritems():
@@ -100,20 +112,20 @@ for key, value in options.__dict__.items():
     if key.startswith('plot'):
         if(options.__dict__[key]):
             _type = ''.join([ss[0].upper()+ss[1:] for ss in key.split("_")])
-            m21.plot(_stream, _type)
+            utils.plot(_stream, _type)
 
 if(options.measures):
     print(options)
-    _stream = m21.select_measures(_stream, options)
+    _stream = utils.select_measures(_stream, options)
 
 if(options.reducte):
-    _stream = m21.reducte_piano(_stream, options)
+    _stream = utils.reducte_piano(_stream, options)
 
 
 # On show
 if(options.show):
     print(_stream)
-    m21.show(_stream, options)
+    utils.show(_stream, options)
 
 if(options.lytexify):
     tools.lytexify(options.lytexify)
