@@ -1,0 +1,24 @@
+jobs:
+  include:
+    - os: linux
+      dist: trusty
+    
+    - os: linux
+      dist: xenial
+    
+    - os: linux
+      dist: focal 
+
+    - os: osx
+
+    - os: windows  
+
+language: python
+python:
+  - "3.9"
+
+before_script:
+  - pip install tox-travis
+
+script:
+  - tox
