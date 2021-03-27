@@ -15,6 +15,12 @@ $ git clone https://github.com/lunhg/m21.git
 $ cd m21 && chmod +x ./m21
 ```
 
+# Test
+
+```bash
+$ tox
+```
+
 # Usage
 
 ## Help

@@ -1,12 +1,3 @@
-**.dep
-**.aux
-**.brf
-**.log
-**.bbl
-**.snippet*
-**~
-**.pyc
-**.synctex.gz
-**.toc
-**.blg
-**#
+.tox/
+src/__pycache__
+tests/__pycache__
