@@ -1,6 +1,5 @@
 from argparse import ArgumentParser
 from src.m21 import M21
-from src.search import Search
 
 
 class Cli(M21):
@@ -17,7 +16,6 @@ class Cli(M21):
         super().__init__()
         self.__parser__ = None
         self.__subparser__ = None
-        self.__subcommands__ = None
         self.__arguments__ = None
 
     def getParser(self):
@@ -26,16 +24,20 @@ class Cli(M21):
     def getSubparser(self):
         return self.__subparser__
 
-    def getSubcommands(self):
-        return self.__subcommands__
-
     def getArguments(self):
         return self.__arguments__
 
-    def buildParser(self):
+    def build(self, *args):
         self.__parser__ = ArgumentParser(
             prog=M21.NAME,
             description=M21.DESCRIPTION
+        )
+
+        self.__parser__.add_argument(
+            '-v',
+            '--version',
+            action='version',
+            version=M21.VERSION
         )
 
         self.__subparser__ = self.__parser__.add_subparsers(
@@ -44,17 +46,10 @@ class Cli(M21):
             dest='subcommand'
         )
 
-    def buildVersion(self):
-        self.__parser__.add_argument(
-            '-v',
-            '--version',
-            action='version',
-            version=M21.VERSION
-        )
-
-    def buildSubcommand(self, Command):
-        command = Command()
-        command.addToSubparser(self.__subparser__)
+        if (len(args) > 0):
+            for Command in args:
+                command = Command(self.__subparser__)
+                command.build()
 
     def addSubcommandArguments(self, subcommand, options):
         v = "_".join(options[1].split("-"))
@@ -84,46 +79,27 @@ class Cli(M21):
                                     default=False)
 
     def parse(self, args):
-        print(args)
-        if(len(args) >0):
+        if(len(args) > 0):
             self.__arguments__ = self.__parser__.parse_args(args)
         else:
             self.__arguments__ = self.__parser__.parse_args()
+        print(self.__arguments__)
 
     def execute(self):
-        if (self.__arguments__ is not None and self.__arguments__.subcommand == 'search'):
+        a = self.getArguments()
+        if (a is not None and a.subcommand == 'search'):
 
             self.setSearch()
-            if (self.__arguments__.composer):
-                self.setComposer(self.__arguments__.composer)
+            if (a.composer):
+                self.setComposer(a.composer)
 
-            if (self.__arguments__.index):
-                self.setIndex(self.__arguments__.index)
+            if (a.index):
+                self.setIndex(a.index)
 
             self.commitSearch()
             self.fetchSearch()
 
     def print(self):
-        if (self.__arguments__ is not None and self.__arguments__.subcommand == 'search'):
+        a = self.getArguments()
+        if (a is not None and a.subcommand == 'search'):
             print(self.getStream())
-
-    @staticmethod
-    def build(*args):
-        cli = Cli()
-
-        # build defaults
-        cli.buildParser()
-        cli.buildVersion()
-
-        # add subcommands
-        for klass in args:
-            cli.buildSubcommand(klass)
-
-        return cli
-
-
-if (__name__ == '__main__'):
-    cli = Cli.build(Search)
-    cli.parse()
-    cli.execute()
-    cli.print()
