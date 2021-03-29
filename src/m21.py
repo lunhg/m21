@@ -1,5 +1,5 @@
 import music21
-from .info import Info
+from src.info import Info
 
 
 class M21(object):
@@ -8,11 +8,11 @@ class M21(object):
     VERSION = Info.getVersion()
     DESCRIPTION = Info.getDescription()
 
-    def __init__(self, **kwargs):
+    def __init__(self):
         self.__stream__ = None
-        self.__search__ = kwargs.get('search') or False
-        self.__composer__ = kwargs.get('composer') or None
-        self.__index__ = kwargs.get('index') or None
+        self.__search__ = False
+        self.__composer__ = None
+        self.__index__ = None
         self.__searchMetadata__ = None
         self.__searchDatas__ = None
 
