@@ -1,0 +1,11 @@
+#!/bin/env python3
+
+if (__name__ == '__main__'):
+    from src.cli import Cli
+    from src.search import Search
+
+    cli = Cli()
+    cli.build(Search)
+    cli.parse()
+    cli.fetch()
+    print(cli.getNamespace())

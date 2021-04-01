@@ -9,9 +9,7 @@ class Test_M21(unittest.TestCase):
 
     def testInicialization(self):
         self.assertEqual(self.m21.getStream(), None)
-        self.assertEqual(self.m21.getSearch(), False)
-        self.assertEqual(self.m21.getComposer(), None)
-        self.assertEqual(self.m21.getIndex(), None)
+        self.assertEqual(self.m21.getNamespace(), None)
 
     def tearDown(self):
         self.m21 = None

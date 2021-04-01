@@ -1,6 +1,7 @@
 import unittest
 from src.cli import Cli
 from src.search import Search
+from music21 import corpus
 
 
 class Test_M21_Cli(unittest.TestCase):
@@ -10,125 +11,68 @@ class Test_M21_Cli(unittest.TestCase):
 
     def test_instantiation(self):
         self.assertEqual(self.cli.getStream(), None)
-        self.assertEqual(self.cli.getSearch(), False)
-        self.assertEqual(self.cli.getComposer(), None)
-        self.assertEqual(self.cli.getIndex(), None)
         self.assertEqual(self.cli.getParser(), None)
-        self.assertEqual(self.cli.getSubparser(), None)
-        self.assertEqual(self.cli.getArguments(), None)
+        self.assertEqual(self.cli.getNamespace(), None)
 
-    def test_simple_build(self):
+    def test_non_existent_option_parse_exception(self):
         self.cli.build()
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertEqual(self.cli.getArguments(), None)
-
-    def test_search_build(self):
-        self.cli.build(Search)
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertEqual(self.cli.getArguments(), None)
-
-    def test_search_parse(self):
-        self.cli.build(Search)
-        self.cli.parse(['search'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-
-    def test_search_long_composer_option_parse_exception(self):
-        self.cli.build(Search)
         self.assertRaises(SystemExit,
                           self.cli.parse,
-                          ['search', '--composer'])
+                          ["--this-command-not-exist"])
 
-    def test_search_short_composer_option_parse_exception(self):
+    def test_parse_search_subcommand(self):
         self.cli.build(Search)
-        self.assertRaises(SystemExit,
-                          self.cli.parse,
-                          ['search', '-c'])
+        for key in corpus.manager.listSearchFields():
+            self.cli.parse([
+                'search',
+                "--{}".format(key),
+                'test'
+            ])
+            self.assertEqual(self.cli.getSubcommand(), 'search')
+            self.assertEqual(key in self.cli.getOptions(), True)
+            self.assertEqual(self.cli.getOptionValue(key), 'test')
 
-    def test_search_long_index_option_parse_exception(self):
+    def test_fetch_search_subcommand(self):
         self.cli.build(Search)
-        self.assertRaises(SystemExit,
-                          self.cli.parse,
-                          ['search', '--index'])
+        query = 'asdf78tasifagsbdfjsd'
+        for key in corpus.manager.listSearchFields():
+            self.cli.parse([
+                'search',
+                "--{}".format(key),
+                query
+            ])
+            self.cli.fetch()
+            self.assertIsInstance(self.cli.getOptionValue(key), dict)
+            self.assertEqual(self.cli.getOptionValue(key)['name'], query)
+            self.assertEqual(self.cli.getOptionValue(key)['length'], 0)
+            self.assertEqual(len(self.cli.getOptionValue(key)['results']), 0)
 
-    def test_search_short_index_option_parse_exception(self):
+    def test_fetch_search_subcommand_composer_option(self):
         self.cli.build(Search)
-        self.assertRaises(SystemExit,
-                          self.cli.parse,
-                          ['search', '-i'])
-
-    def test_search_long_composer_and_index_options_parse_exception(self):
-        self.cli.build(Search)
-        self.assertRaises(SystemExit,
-                          self.cli.parse,
-                          ['search', '--composer', '--index'])
-
-    def test_search_short_composer_and_index_options_parse_exception(self):
-        self.cli.build(Search)
-        self.assertRaises(SystemExit,
-                          self.cli.parse,
-                          ['search', '-c', '-i'])
-
-    def test_search_long_composer_option_parse_success(self):
-        self.cli.build(Search)
-        self.cli.parse(['search', '--composer', 'test'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-        self.assertEqual(self.cli.getArguments().composer, 'test')
-
-    def test_search_short_composer_options_parse_success(self):
-        self.cli.build(Search)
-        self.cli.parse(['search', '-c', 'test'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-        self.assertEqual(self.cli.getArguments().composer, 'test')
-
-    def test_search_long_index_option_parse_success(self):
-        self.cli.build(Search)
-        self.cli.parse(['search', '--index', 'test'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-        self.assertEqual(self.cli.getArguments().index, 'test')
-
-    def test_search_short_index_options_parse_success(self):
-        self.cli.build(Search)
-        self.cli.parse(['search', '-i', 'test'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-        self.assertEqual(self.cli.getArguments().index, 'test')
-
-    def test_search_long_composer_and_index_options_parse_success(self):
-        self.cli.build(Search)
-        self.cli.parse(['search', '--composer', 'test', '--index', 'test'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-        self.assertEqual(self.cli.getArguments().composer, 'test')
-        self.assertEqual(self.cli.getArguments().index, 'test')
-
-    def test_search_short_composer_and_index_options_parse_success(self):
-        self.cli.build(Search)
-        self.cli.parse(['search', '-c', 'test', '-i', 'test'])
-        self.assertNotEqual(self.cli.getParser(), None)
-        self.assertNotEqual(self.cli.getSubparser(), None)
-        self.assertNotEqual(self.cli.getArguments(), None)
-        self.assertEqual(self.cli.getArguments().subcommand, 'search')
-        self.assertEqual(self.cli.getArguments().composer, 'test')
-        self.assertEqual(self.cli.getArguments().index, 'test')
-
+        for composer in ['bach', 'mozart', 'beethoven']:
+            self.cli.parse([
+                'search',
+                "--composer",
+                composer
+            ])
+            self.cli.fetch()
+            self.assertIsInstance(self.cli.getOptionValue('composer'), dict)
+            self.assertEqual(
+                self.cli.getOptionValue('composer')['name'],
+                composer
+            )
+            self.assertNotEqual(
+                self.cli.getOptionValue('composer')['length'],
+                0
+            )
+            self.assertIsInstance(
+                self.cli.getOptionValue('composer')['results'],
+                list
+            )
+            self.assertNotEqual(
+                len(self.cli.getOptionValue('composer')['results']),
+                0
+            )
 
     def tearDown(self):
         self.cli = None

@@ -1,26 +1,27 @@
-import src.options as options
-
-
 class Command(object):
+    """A superclass to be implemented as command.
+    The inherited classes should implement:
+        - the `build` method, where it should define:
+            - short and long options (*args)
+            - action, help, dest, default (**kwargs)
+            - in the end add:
+            - self.command.add_argument(*args, **kwargs)
+        - the `exec` method, where it should:"""
 
     def __init__(self, **kwargs):
-        self.parser = kwargs.get('parser')
-        self.title = kwargs.get('title')
-        self.description = kwargs.get('description')
-        self.help = kwargs.get('help')
-        self.arguments = kwargs.get('arguments')
-        self.command = self.parser.add_parser(
-            self.title,
-            description=self.description,
-            help=self.help
+        self.__parser__ = kwargs.get('parser')
+        self.__options__ = kwargs.get('options')
+        self.__command__ = self.__parser__.add_parser(
+            kwargs.get('title'),
+            description=kwargs.get('description'),
+            help=kwargs.get('help')
         )
 
-    def yieldArguments(self):
-        for a in self.arguments:
-            for key, val in options.__dict__.items():
-                if(key == a):
-                    yield val
+    def getParser(self):
+        return self.__parser__
 
-    def build(self):
-        for listArgs in self.yieldArguments():
-            self.__build__(listArgs)
+    def getCommand(self):
+        return self.__command__
+
+    def getOptions(self):
+        return self.__options__

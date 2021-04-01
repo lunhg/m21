@@ -1,3 +1,5 @@
+import json
+from music21 import corpus
 from argparse import ArgumentParser
 from src.m21 import M21
 
@@ -15,32 +17,39 @@ class Cli(M21):
     def __init__(self):
         super().__init__()
         self.__parser__ = None
-        self.__subparser__ = None
-        self.__arguments__ = None
+
+    def setParser(self, c):
+        self.__parser__ = c
 
     def getParser(self):
         return self.__parser__
 
-    def getSubparser(self):
-        return self.__subparser__
+    def getSubcommand(self):
+        return self.getNamespace().subcommand
 
-    def getArguments(self):
-        return self.__arguments__
+    def getOptions(self):
+        return vars(self.getNamespace()).keys()
+
+    def getOptionValue(self, key):
+        return getattr(self.getNamespace(), key)
+
+    def setOptionValue(self, key, val):
+        return setattr(self.getNamespace(), key, val)
 
     def build(self, *args):
-        self.__parser__ = ArgumentParser(
+        parser = ArgumentParser(
             prog=M21.NAME,
             description=M21.DESCRIPTION
         )
 
-        self.__parser__.add_argument(
+        parser.add_argument(
             '-v',
             '--version',
             action='version',
             version=M21.VERSION
         )
 
-        self.__subparser__ = self.__parser__.add_subparsers(
+        subparser = parser.add_subparsers(
             title='subcommands',
             description='valid subcommands',
             dest='subcommand'
@@ -48,8 +57,10 @@ class Cli(M21):
 
         if (len(args) > 0):
             for Command in args:
-                command = Command(self.__subparser__)
+                command = Command(subparser)
                 command.build()
+
+        self.setParser(parser)
 
     def addSubcommandArguments(self, subcommand, options):
         v = "_".join(options[1].split("-"))
@@ -78,28 +89,32 @@ class Cli(M21):
                                     dest=v,
                                     default=False)
 
-    def parse(self, args):
-        if(len(args) > 0):
-            self.__arguments__ = self.__parser__.parse_args(args)
+    def parse(self, args=None):
+        if(args is not None):
+            self.setNamespace(self.__parser__.parse_args(args))
         else:
-            self.__arguments__ = self.__parser__.parse_args()
-        print(self.__arguments__)
+            self.setNamespace(self.__parser__.parse_args())
 
-    def execute(self):
-        a = self.getArguments()
-        if (a is not None and a.subcommand == 'search'):
+    def __fetch__(self, command):
+        if (self.getSubcommand() == command):
+            for key in self.getOptions():
+                if (key != 'subcommand'):
+                    val = self.getOptionValue(key)
+                    if (val):
+                        res = {'name': val, 'results': []}
+                        for r in corpus.search(val, field=key):
+                            __r__ = {
+                                'corpus': r.corpusName,
+                                'path': r.corpusPath,
+                                'metadata':{}
+                            }
+                            for __k__ in vars(r.metadata).keys():
+                                if '_' not in __k__:
+                                    __v__ = getattr(r.metadata, __k__)
+                                    __r__['metadata'][__k__] = __v__
+                            res['results'].append(__r__)
+                        res['length'] = len(res['results'])
+                        self.setOptionValue(key, res)
 
-            self.setSearch()
-            if (a.composer):
-                self.setComposer(a.composer)
-
-            if (a.index):
-                self.setIndex(a.index)
-
-            self.commitSearch()
-            self.fetchSearch()
-
-    def print(self):
-        a = self.getArguments()
-        if (a is not None and a.subcommand == 'search'):
-            print(self.getStream())
+    def fetch(self):
+        self.__fetch__('search')

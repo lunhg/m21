@@ -1,4 +1,5 @@
 from src.command import Command
+from music21 import corpus
 
 
 class Search(Command):
@@ -9,12 +10,15 @@ class Search(Command):
             title='search',
             description='search for entries in music21 corpus',
             help='search for entries in music21 corpus',
-            arguments=['composer', 'index']
+            options=corpus.manager.listSearchFields()
         )
 
-    def __build__(self, lst):
-        v = "_".join(lst[1].split("-"))
-        a = "-%s" % lst[0]
-        b = "--%s" % lst[1]
-        self.command.add_argument(a, b, action=lst[2], help=lst[3], dest=v,
-                                  default=False)
+    def build(self):
+        for word in self.getOptions():
+            self.getCommand().add_argument(
+                "--{}".format(word),
+                help="search for entries with {} predicate".format(word),
+                action=None,
+                dest=word,
+                default=False
+            )

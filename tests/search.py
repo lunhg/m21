@@ -1,19 +1,37 @@
 import unittest
-from src.m21 import M21
-
+from argparse import ArgumentParser
+from src.search import Search
+from music21 import corpus
 
 class Test_M21_Search(unittest.TestCase):
 
     def setUp(self):
-        self.m21 = M21()
+        self.parser = ArgumentParser(
+            prog='test',
+            description='test command'
+        )
 
-    def testSetSearch(self):
-        self.m21.setSearch()
-        self.assertEqual(self.m21.getSearch(), True)
+        subparser = self.parser.add_subparsers(
+            title='subcommand',
+            description='test subcommand',
+            dest='subcommand'
+        )
 
-    def testUnsetSearch(self):
-        self.m21.unsetSearch()
-        self.assertEqual(self.m21.getSearch(), False)
+        search = Search(subparser)
+        search.build()
+
+    def test_search_raises_invalid_long_option(self):
+        self.assertRaises(
+            SystemExit,
+            self.parser.parse_args,
+            ['search', '--is', 'invalid_option']
+        )
+
+    def test_search_options(self):
+        for key in corpus.manager.listSearchFields():
+            namespace = self.parser.parse_args(['search', "--{}".format(key), 'test'])
+            self.assertEqual(namespace.subcommand, 'search')
+            self.assertEqual(getattr(namespace, key), 'test')
 
     def tearDown(self):
-        self.m21 = None
+        self.parser = None
